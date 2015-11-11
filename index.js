@@ -4,6 +4,7 @@ import d3 from 'd3'
 
 import * as parse from './lib/parse'
 import * as date from './lib/date'
+import * as number from './lib/number'
 
 var body = d3.select('body')
 var padding = 40
@@ -18,7 +19,7 @@ function init (data) {
 	var svg = body.append('svg')
 		.classed('canvas', true)
 
-	body.select('[data-bind="pages"]').text(d3.format("0,000")(data.length))
+	body.select('[data-bind="pages"]').text(number.withThousandsComma(data.length))
 	body.select('[data-bind="days"]').text(days.length)
 
 	var ly = d3.scale.linear()
