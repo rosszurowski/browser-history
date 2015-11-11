@@ -5,10 +5,17 @@ var fs = require('mz/fs')
 var csv = require('csv')
 var sqlite = require('co-sqlite3')
 
-var path = `${__dirname}/../db`
+var path = require('path')
+
+var args = process.argv.slice(2)
+if (args.length < 1) {
+	throw new Error('Must pass a file to sqlite-to-json')
+}
+var file = args[0]
+var name = filename(file)
 
 co(function * () {
-	var db = yield sqlite(`${path}/history.db`)
+	var db = yield sqlite(path.resolve(process.cwd(), file))
 
 	var keys = ['urls', 'visits', 'meta', 'keyword_search_terms']
 	var json = {}
@@ -19,7 +26,6 @@ co(function * () {
 	}
 
 	return json.urls
-
 
 }).then(data => {
 	return Promise.resolve(JSON.stringify(data))
@@ -32,7 +38,7 @@ co(function * () {
 	// })
 })
 .then(data => {
-	return fs.writeFile(`${path}/output.json`, data)
+	return fs.writeFile(path.resolve(process.cwd(), `./db/${name}.json`), data)
 }).then(() => {
 	process.exit(0)
 }).catch(err => {
@@ -63,4 +69,9 @@ var parsers = {
 function parseDate (timestamp) {
 	var v = (timestamp/1000000) - 11644473600
 	return Math.floor(v * 1000)
+}
+
+function filename (p) {
+	var pp = path.basename(p)
+	return pp.substr(0, pp.lastIndexOf('.'))
 }

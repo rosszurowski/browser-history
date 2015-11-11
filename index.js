@@ -10,8 +10,7 @@ var body = d3.select('body')
 var padding = 40
 
 function init (data) {
-	// get the last 9000
-	data = data.slice(data.length - 28000)
+
 	var days = d3.nest()
 		.key(d => date.format.yearMonthDay(d.last_visit_time))
 		.entries(data)
@@ -61,14 +60,10 @@ function init (data) {
 	setTimeout(() => body.classed('loading', false), 500)
 }
 
-function render (parent) {
-
-}
-
 /**
  * Kick it offf
  */
-fetch('db/output.json')
+fetch('db/ross.json')
 	.then(res => res.json())
 	.then(parse.chrome)
 	.then(init)

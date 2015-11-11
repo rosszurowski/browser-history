@@ -19,7 +19,7 @@ develop: install
 	@budo --port $(PORT) --live index.js -- -t [ babelify --presets [ es2015 ] ] | garnish
 
 db\:generate:
-	@bin/sqlite-to-json
+	@find ./db/raw/ -name "*.db" -exec bin/sqlite-to-json {} \;
 
 clean:
 	@rm -rf node_modules
