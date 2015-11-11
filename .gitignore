@@ -1,0 +1,11 @@
+
+# Ignore npm scraps
+node_modules/
+npm-debug.log
+
+# Ignore OS X scraps
+.DS_Store
+
+# Ignore design files
+inspire/
+resources/
