@@ -15,7 +15,7 @@ PORT = 8080
 # Tasks
 #
 
-develop: install
+watch: install
 	@budo --port $(PORT) --live index.js -- -t [ babelify --presets [ es2015 ] ] | garnish
 
 db\:generate:

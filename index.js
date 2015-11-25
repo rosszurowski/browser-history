@@ -5,17 +5,38 @@ import d3 from 'd3'
 import * as parse from './lib/parse'
 import * as date from './lib/date'
 import * as number from './lib/number'
+import * as url from './lib/url'
 
-var body = d3.select('body')
-var padding = 40
+const TWO_PI = Math.PI * 2
 
-var TWO_PI = Math.PI * 2
+const body = d3.select('body')
+const padding = 40
+
+const colors = {
+	'localhost:8080': 'rgba(232, 241, 134, 0.2)',
+	'docs.google.com': 'rgba(232, 241, 134, 0.2)',
+	'facebook.com': 'rgba(134, 151, 241, 0.2)',
+	'mail.google.com': 'rgba(232, 241, 134, 0.2)',
+	'reddit.com': 'rgba(232, 241, 134, 0.2)'
+}
+
+const excluded = [
+	'docs.google.com' // it triggers way too many history events
+]
 
 function init (data) {
 
 	var days = d3.nest()
 		.key(d => date.format.yearMonthDay(d.last_visit_time))
 		.entries(data)
+
+	var favourites = _(data)
+		.sort((a, b) => b.visit_count - a.visit_count)
+		.unique(d => url.domain(d.url))
+		.filter(d => /^http(s)?/g.test(d.url))
+		.filter(d => !excluded.includes(url.domain(d.url)))
+		.take(5)
+		.value()
 
 	var canvas = body.append('canvas')
 		.classed('canvas', true)
@@ -32,6 +53,14 @@ function init (data) {
 		.domain([0, 2])
 		.range([0, 100])
 
+	d3.select('.header-sites-list').selectAll('.header-site')
+			.data(favourites)
+		.enter().append('a')
+			.attr('class', 'header-site')
+			.attr('target', '_blank')
+			.attr('href', d => d.url)
+			.text(d => url.domain(d.url))
+
 	d3.select('.labels').selectAll('.label')
 			.data(['12am', '12pm', '12am'])
 		.enter().append('div')
@@ -39,26 +68,28 @@ function init (data) {
 			.style('top', (d, i) => `${ly(i)}%`)
 			.text(d => d)
 
-	// x is columns by day
 	var x = d3.scale.linear()
 		.domain([0, d3.keys(days).length])
 		.range([padding, canvas.node().clientWidth - padding])
-	// y is by time of day
 	var y = d3.time.scale()
 		.range([padding, canvas.node().clientHeight - padding])
 
 	render()
-	// d3.timer(render)
 	d3.select(window).on('resize', _.throttle(resize, 200))
 
 	function render () {
+		var fillStyle = 'rgba(246, 138, 103, 0.05)'
 		clear(ctx, canvas.node())
-		ctx.fillStyle = 'rgba(246, 138, 103, 0.05)'
 		days.forEach((day, i) => {
 			var left = x(i)
 			y.domain(date.extentOfDay(day.values[0].last_visit_time))
 			day.values.forEach((d, i) => {
 				var top = y(d.last_visit_time)
+				if (colors[url.domain(d.url)]) {
+					ctx.fillStyle = colors[url.domain(d.url)]
+				} else {
+					ctx.fillStyle = fillStyle
+				}
 				ctx.beginPath()
 				ctx.arc(Math.round(left), top, 2, 0, TWO_PI, true)
 				ctx.closePath()
