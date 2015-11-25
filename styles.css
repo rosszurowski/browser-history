@@ -21,6 +21,7 @@ html {
 	width: 20%;
 	top: 50%;
 	left: 5%;
+	will-change: opacity, transform;
 	transition:
 		opacity 800ms ease,
 		transform 800ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
@@ -36,6 +37,22 @@ html {
 .header-description {
 	color: hsl(210, 2%, 75%);
 	font-size: 13px;
+}
+
+.header-site-list {
+}
+
+.header-site {
+	display: inline-block;
+	float: left;
+	clear: left;
+	padding: 0.5rem 0.75rem 0.4rem;
+	margin: 0.5rem 0;
+	border: 1px rgba(255, 255, 255, 0.1) solid;
+	border-radius: 4px;
+	color: hsl(210, 2%, 75%);
+	font-size: 12px;
+	text-decoration: none;
 }
 
 pre {
@@ -80,16 +97,6 @@ pre {
 	letter-spacing: 0.025em;
 	text-align: right;
 	text-transform: uppercase;
-}
-
-.node {
-	r: 2;
-	fill: #f68a67;
-	/*fill: none;*/
-	/*stroke: #fff;*/
-	/*stroke-width: 2;*/
-	opacity: 0.1;
-	animation: grow 200ms ease;
 }
 
 /**
