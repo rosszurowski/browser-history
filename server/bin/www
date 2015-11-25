@@ -1,0 +1,23 @@
+#!/usr/bin/env node --harmony
+
+const chalk = require('chalk')
+
+const server = require('..')
+const pkg = require('../package')
+
+const env = process.env.NODE_ENV || 'development'
+const port = process.env.PORT || 8081
+
+server.listen(port)
+
+console.log(`${chalk.green(pkg.name + ' is running...')}
+Listening on https://localhost:${port}
+Environment: ${env}
+${chalk.gray('Ctrl+C to shut down')}`)
+
+process.on('SIGINT', function() {
+	console.log(`
+${chalk.red('Server has shutdown')}
+Server was running for ${Math.round(process.uptime())} seconds`)
+	process.exit(0)
+})
