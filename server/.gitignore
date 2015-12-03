@@ -1,0 +1,17 @@
+
+# Ignore npm scraps
+node_modules/
+npm-debug.log
+
+# Ignore environment and temporary files
+.env
+tmp/
+
+db/
+
+# Ignore OS X scraps
+.DS_Store
+
+# Ignore design files
+inspire/
+resources/

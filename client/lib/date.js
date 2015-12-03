@@ -9,5 +9,6 @@ export var endOfDay = d => clone(d).setHours(23, 59, 59, 999)
 export var extentOfDay = d => [Date.from(beginningOfDay(d)), Date.from(endOfDay(d))]
 
 export const format = {
-	yearMonthDay: d3.time.format('%Y-%m-%d')
+	yearMonthDay: d3.time.format('%Y-%m-%d'),
+	iso: d3.time.format.iso
 }

@@ -13,21 +13,74 @@
 	<![endif]-->
 </head>
 <body class="loading">
-	<header class="header">
-		<div class="header-description">
-			<p>A visualization of the previous <span data-bind="pages">140,000</span> web pages I've visited, over the last <span data-bind="days">few</span> days.</p>
-			<p>To upload your own data, open Terminal and copy/paste the following command</p>
-			<pre><code>curl -fsSL http://rosszurowski.com/browser-history/upload</code></pre>
-			<p>Or, drop your Chrome history file on this window.</p>
-		</div>
-		<div class="header-sites">
-			<span class="header-sites-header">Favourite Sites</span>
-			<div class="header-sites-list"></div>
-		</div>
-	</header>
-	<div class="labels">
-	</div>
 	<div class="loading-indicator"></div>
-	<script src="index.js"></script>
+	<main class="app">
+		<section class="sidebar">
+			<section class="section-files">
+				<div class="files-header">
+					<div class="files-header-title">Histories</div>
+					<div class="files-header-prompt">
+						<a @click.prevent="toggleUploadPanel" href="#">Upload your own</a>
+						<div class="files-upload-panel" transition="panel" v-if="uploadPanelOpen" @click.stop>
+							<p>To add your browser's history to the list, open Terminal and copy/paste the command below.</p>
+							<p>If you know where it's located, you can also drop your browser's history file onto this window</p>
+							<pre @click.prevent="selectCode"><code v-el:code>ruby -e "$(curl -fsSL http://rosszurowski.com/browser-history/upload)"</code></pre>
+							<p class="small">Currently, only Chrome and OS X are supported.</p>
+						</div>
+					</div>
+				</div>
+				<div class="files-list">
+					<a class="file" href="#"
+						@click.prevent="selectFile(f)"
+						:class="{ 'active': files[file].path === f.path }"
+						:data-src="f.path"
+						v-for="(index, f) in files | limit 4">
+						<div class="file-meta">
+							<span class="file-user">{{ f.user }}</span>
+							<span class="file-ip-address">{{ f.ip_address }}</span>
+						</div>
+						<div class="file-date">
+							<span class="file-timestamp">{{ f.date | date }}</span>
+						</div>
+					</a>
+				</div>
+			</section>
+			<section class="section-loading" v-if="!loaded">
+				<div class="block-pages"></div>
+				<div class="block-days"></div>
+				<div class="block-sites">
+					<div class="block-site"></div>
+					<div class="block-site"></div>
+					<div class="block-site"></div>
+					<div class="block-site"></div>
+				</div>
+			</section>
+			<section class="section-details" v-if="loaded">
+				<section class="detail-callouts">
+					<p>Over the last <span class="callout-days">{{ dayCount | number }} days</span>, <span class="callout-user">{{ files[file].user }}</span> has visited <span class="callout-pages">{{ pageCount | number }} pages</span>.</p>
+				</section>
+				<section class="detail-sites">
+					<div class="sites-header">
+						<div class="sites-header-title">Most Visited Sites</div>
+					</div>
+					<div class="sites-list">
+						<a class="site" :href="site.url" target="_blank" v-for="site in favorites">
+							<span class="site-title">{{ site.title }}</span>
+							<span class="site-domain">{{ site.url | domain }}</span>
+						</a>
+					</div>
+				</section>
+			</section>
+		</section>
+		<section class="content">
+			<canvas class="canvas"></canvas>
+			<div class="canvas-loading">
+				<div class="canvas-loading-progress" :style="{ 'width': progressPercentage }"></div>
+				<div class="canvas-loading-track"></div>
+			</div>
+		</section>
+	</main>
+	<div class="labels"></div>
+	<script src="bundle.js" async></script>
 </body>
 </html>

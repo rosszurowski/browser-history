@@ -1,9 +1,13 @@
 
 'use strict'
 
+const sqlite = require('co-sqlite3')
+
 const identity = obj => obj
 
-module.exports = function * (db) {
+module.exports = function * (path) {
+
+	const db = yield sqlite(path)
 
 	let tables = ['urls', 'visits', 'meta', 'keyword_search_terms']
 	let json = {}
@@ -14,7 +18,7 @@ module.exports = function * (db) {
 		json[table] = values.map(parser)
 	}
 
-	return json.urls
+	return json
 
 }
 

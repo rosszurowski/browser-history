@@ -3,9 +3,17 @@
 node_modules/
 npm-debug.log
 
+# Ignore environment and temporary files
+.env
+tmp/
+build/
+client/db
+server/db/*.json
+
 # Ignore OS X scraps
 .DS_Store
 
 # Ignore design files
+design/
 inspire/
 resources/
