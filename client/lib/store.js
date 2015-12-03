@@ -25,6 +25,7 @@ const state = {
 }
 
 let db = {}
+let vis = null
 
 dispatcher.on('error', err => console.error(err))
 dispatcher.on('sync', data => {
@@ -45,6 +46,8 @@ dispatcher.on('file:new', data => {
 
 dispatcher.on('db:load', file => {
 	state.loaded = false
+	if (vis) vis.destroy()
+	// TODO: add memoizing
 	api.get(file.path)
 		.on('progress', e => dispatch('db:progress', e.loaded / file.size))
 		.then(res => parse.chrome(res.body))
@@ -82,7 +85,9 @@ dispatcher.on('db:loaded', data => {
 	dispatcher('update:visualization', db)
 })
 
-dispatcher.on('update:visualization', data => visualization(data))
+dispatcher.on('update:visualization', data => {
+	vis = visualization(data)
+})
 
 export const dispatch = dispatcher
 export const getState = () => state

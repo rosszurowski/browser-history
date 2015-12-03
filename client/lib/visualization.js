@@ -32,11 +32,18 @@ const ly = d3.scale.linear()
 /**
  * Data visualization
  */
-export default function (data) {
 
+
+export default function (data) {
 	const days = d3.nest()
 		.key(d => date.format.yearMonthDay(d.last_visit_time))
 		.entries(data)
+	const x = d3.scale.linear()
+		.domain([0, d3.keys(days).length])
+		.range([PADDING, width - PADDING])
+	const y = d3.time.scale()
+		.range([PADDING, height - PADDING])
+	const resizer = _.throttle(resize, 200)
 
 	d3.select('.labels').selectAll('.label')
 			.data(['12am', '12pm', '12am'])
@@ -45,13 +52,7 @@ export default function (data) {
 			.style('top', (d, i) => `${ly(i)}%`)
 			.text(d => d)
 
-	const x = d3.scale.linear()
-		.domain([0, d3.keys(days).length])
-		.range([PADDING, width - PADDING])
-	const y = d3.time.scale()
-		.range([PADDING, height - PADDING])
-
-	d3.select(window).on('resize', _.throttle(resize, 200))
+	d3.select(window).on('resize', resizer)
 
 	function render () {
 		clear(ctx)
@@ -80,6 +81,12 @@ export default function (data) {
 
 	clear(ctx)
 	resize()
+
+	return {
+		destroy () {
+			clear(ctx)
+		}
+	}
 }
 
 

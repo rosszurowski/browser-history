@@ -282,7 +282,7 @@ body.loading .loading-indicator {
 	animation: blink 300ms linear infinite;
 }
 
-body.loading .sidebar {
+body.loading .app {
 	opacity: 0.0;
 	transform: translateY(0);
 }
