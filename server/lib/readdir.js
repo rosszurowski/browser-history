@@ -1,7 +1,6 @@
 
 const fs = require('mz/fs')
 const join = require('path').join
-// const map = require('promise-map')
 
 var Promise = require('bluebird')
 

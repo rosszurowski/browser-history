@@ -10,5 +10,4 @@ module.exports = {
 	root: resolve('..'),
 	public: resolve('../public'),
 	uploads: resolve('../db')
-
 }
