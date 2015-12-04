@@ -57,14 +57,17 @@ export default function (data) {
 	function render () {
 		clear(ctx)
 		days.forEach((day, i) => {
-			const left = x(i)
-			const firstVisit = day.values[0]
-			y.domain(date.extentOfDay(firstVisit.last_visit_time))
-			day.values.forEach(d => {
-				const top = y(d.last_visit_time)
-				const fill = getFillColor(d.url)
-				raf(dot(ctx, top, left, fill))
-			})
+			setTimeout(() => {
+				const left = x(i)
+				const firstVisit = day.values[0]
+				y.domain(date.extentOfDay(firstVisit.last_visit_time))
+				console.log('rendering day ' + i)
+				day.values.forEach((site, j) => {
+					const top = y(site.last_visit_time)
+					const fill = getFillColor(site.url)
+					raf(() => dot(ctx, top, left, fill))
+				})
+			}, i * 5)
 		})
 	}
 
@@ -103,10 +106,8 @@ function getFillColor (u) {
  * Draw dot to canvas
  */
 function dot (ctx, top, left, fill) {
-	return () => {
-		ctx.fillStyle = fill
-		ctx.beginPath()
-		ctx.arc(Math.round(left), top, 2, 0, TWO_PI, true)
-		ctx.fill()
-	}
+	ctx.fillStyle = fill
+	ctx.beginPath()
+	ctx.arc(Math.round(left), top, 2, 0, TWO_PI, true)
+	ctx.fill()
 }

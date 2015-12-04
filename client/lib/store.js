@@ -86,7 +86,9 @@ dispatcher.on('db:loaded', data => {
 })
 
 dispatcher.on('update:visualization', data => {
-	vis = visualization(data)
+	setTimeout(() => {
+		vis = visualization(data)
+	}, 0)
 })
 
 export const dispatch = dispatcher

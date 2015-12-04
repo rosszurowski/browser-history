@@ -34,9 +34,9 @@
 						@click.prevent="selectFile(f)"
 						:class="{ 'active': files[file].path === f.path }"
 						:data-src="f.path"
-						v-for="(index, f) in files | limit 4">
+						v-for="(index, f) in files | limit 5">
 						<div class="file-meta">
-							<span class="file-user">{{ f.user }}</span>
+							<span class="file-user">{{ f.user | lowercase }}</span>
 							<span class="file-ip-address">{{ f.ip_address }}</span>
 						</div>
 						<div class="file-date">
@@ -57,7 +57,8 @@
 			</section>
 			<section class="section-details" v-if="loaded">
 				<section class="detail-callouts">
-					<p>Over the last <span class="callout-days">{{ dayCount | number }} days</span>, <span class="callout-user">{{ files[file].user }}</span> has visited <span class="callout-pages">{{ pageCount | number }} pages</span>.</p>
+					<div class="callout-days">{{ dayCount | number }} days</div>
+					<div class="callout-pages">{{ pageCount | number }} pages</div>
 				</section>
 				<section class="detail-sites">
 					<div class="sites-header">
@@ -74,7 +75,7 @@
 		</section>
 		<section class="content">
 			<canvas class="canvas"></canvas>
-			<div class="canvas-loading">
+			<div class="canvas-loading" v-if="!loaded" :class="{ 'loaded': loaded }">
 				<div class="canvas-loading-progress" :style="{ 'width': progressPercentage }"></div>
 				<div class="canvas-loading-track"></div>
 			</div>
