@@ -34,7 +34,7 @@
 						@click.prevent="selectFile(f)"
 						:class="{ 'active': files[file].path === f.path }"
 						:data-src="f.path"
-						v-for="(index, f) in files | limit 5">
+						v-for="(index, f) in files | limit datasetCount">
 						<div class="file-meta">
 							<span class="file-user">{{ f.user | lowercase }}</span>
 							<span class="file-ip-address">{{ f.ip_address }}</span>

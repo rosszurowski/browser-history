@@ -12,3 +12,5 @@ export const format = {
 	yearMonthDay: d3.time.format('%Y-%m-%d'),
 	iso: d3.time.format.iso
 }
+
+export const sort  = (a, b) => Date.parse(a.date) < Date.parse(b.date)

@@ -20,10 +20,15 @@ import { dispatch, getState } from './store'
 let width
 let height
 
+let days
+let x = d3.scale.linear()
+let y = d3.time.scale()
+
+let timeouts = []
+
 const body = d3.select('body')
 const canvas = body.select('.canvas')
 const ctx = canvas.node().getContext('2d')
-const clear = ctx => ctx.clearRect(0, 0, width, height)
 
 const ly = d3.scale.linear()
 	.domain([0, 2])
@@ -35,15 +40,6 @@ const ly = d3.scale.linear()
 
 
 export default function (data) {
-	const days = d3.nest()
-		.key(d => date.format.yearMonthDay(d.last_visit_time))
-		.entries(data)
-	const x = d3.scale.linear()
-		.domain([0, d3.keys(days).length])
-		.range([PADDING, width - PADDING])
-	const y = d3.time.scale()
-		.range([PADDING, height - PADDING])
-	const resizer = _.throttle(resize, 200)
 
 	d3.select('.labels').selectAll('.label')
 			.data(['12am', '12pm', '12am'])
@@ -52,12 +48,22 @@ export default function (data) {
 			.style('top', (d, i) => `${ly(i)}%`)
 			.text(d => d)
 
-	d3.select(window).on('resize', resizer)
+	function configure (data) {
+		days = d3.nest()
+			.key(d => date.format.yearMonthDay(d.last_visit_time))
+			.entries(data)
+		x.domain([0, d3.keys(days).length])
+	}
+
+	function clear () {
+		timeouts.forEach(clearTimeout)
+		ctx.clearRect(0, 0, width, height)
+	}
 
 	function render () {
-		clear(ctx)
+		clear()
 		days.forEach((day, i) => {
-			setTimeout(() => {
+			timeouts.push(setTimeout(() => {
 				const left = x(i)
 				const firstVisit = day.values[0]
 				y.domain(date.extentOfDay(firstVisit.last_visit_time))
@@ -66,28 +72,35 @@ export default function (data) {
 					const fill = getFillColor(site.url)
 					raf(() => dot(ctx, top, left, fill))
 				})
-			}, i * 5)
+			}, i * 50))
 		})
 	}
 
 	function resize () {
-		width = canvas.node().clientWidth
-		height = canvas.node().clientHeight
+		const parent = canvas.node().parentNode
+		width = parent.clientWidth
+		height = parent.clientHeight
 		canvas
 			.attr('width', width)
 			.attr('height', height)
 		x.range([PADDING, width - PADDING])
 		y.range([PADDING, height - PADDING])
-		render()
+		if (typeof days !== 'undefined') {
+			render()
+		}
 	}
 
-	clear(ctx)
+	if (data) {
+		configure(data)
+	}
+
+	window.addEventListener('resize', _.throttle(resize, 200))
 	resize()
 
 	return {
-		destroy () {
-			clear(ctx)
-		}
+		configure,
+		clear,
+		render
 	}
 }
 

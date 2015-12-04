@@ -3,9 +3,10 @@ import _ from 'lodash'
 import Vue from 'vue'
 import clone from 'clone'
 
-import { format } from './date'
-import { withThousandsComma } from './number'
 import { domain } from './url'
+import { format } from './date'
+import { DATASET_COUNT } from './constants'
+import { withThousandsComma } from './number'
 import { getState, dispatch } from './store'
 
 Vue.config.debug = true
@@ -22,6 +23,9 @@ export default function (el) {
 		computed: {
 			progressPercentage: function () {
 				return this.progress * 100 + '%'
+			},
+			datasetCount: function () {
+				return DATASET_COUNT
 			}
 		},
 		methods: {

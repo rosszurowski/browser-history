@@ -11,6 +11,7 @@ export const TWO_PI = Math.PI * 2
 export const EXCLUDED_DOMAINS = [
 	'docs.google.com' // it triggers way too many history events
 ]
+export const DATASET_COUNT = 6
 export const FAVORITE_COUNT = 5
 
 /**

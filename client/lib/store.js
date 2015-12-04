@@ -1,12 +1,15 @@
 
 import _ from 'lodash'
+import ready from 'domready'
 import barracks from 'barracks'
+
+window.ready = ready
 
 import visualization from './visualization'
 import api from './api'
 import parse from './parse'
 import { domain } from './url'
-import { format } from './date'
+import { format, sort } from './date'
 import { EXCLUDED_DOMAINS, FAVORITE_COUNT } from './constants'
 
 const dispatcher = barracks()
@@ -31,9 +34,10 @@ dispatcher.on('error', err => console.error(err))
 dispatcher.on('sync', data => {
 	state.connected = true
 	state.id = data.id
-	state.files = data.files
+	state.files = data.files.sort(sort)
 	state.file = 0
 	state.updatedAt = Date.now()
+	vis = visualization()
 	console.log('State:', state)
 })
 
@@ -47,7 +51,9 @@ dispatcher.on('file:new', data => {
 dispatcher.on('db:load', file => {
 	state.progress = 0.0
 	state.loaded = false
-	if (vis) vis.destroy()
+	if (vis) {
+		vis.clear()
+	}
 	// TODO: add memoizing
 	api.get(file.path)
 		.on('progress', e => dispatch('db:progress', e.loaded / file.size))
@@ -83,13 +89,13 @@ dispatcher.on('db:loaded', data => {
 	// has obvious issues. We should add the `session` key that's present in
 	// state.files to incoming databases
 	state.file = state.files.findIndex(file => file.date === data.date)
-	dispatcher('update:visualization', db)
+	dispatch('visualization:update', db)
 })
 
-dispatcher.on('update:visualization', data => {
-	setTimeout(() => {
-		vis = visualization(data)
-	}, 0)
+dispatcher.on('visualization:update', data => {
+	vis.clear()
+	vis.configure(data)
+	vis.render()
 })
 
 export const dispatch = dispatcher

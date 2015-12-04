@@ -29,7 +29,5 @@ socket.emit('session:new')
 
 ready(() => {
 	view('.app')
-	setTimeout(() => {
-		document.body.classList.remove('loading')
-	}, 50)
+	document.body.classList.remove('loading')
 })

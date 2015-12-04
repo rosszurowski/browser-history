@@ -39,9 +39,9 @@ p.small {
 	position: absolute;
 	display: flex;
 	flex-direction: column;
-	padding: 40px 80px 40px 60px;
+	padding: 40px 80px 40px 40px;
 	width: 90%;
-	max-width: 30rem;
+	max-width: 32rem;
 	top: 0; bottom: 0; left: 0;
 	color: hsl(210, 2%, 75%);
 	font-size: 13px;
@@ -61,10 +61,15 @@ p.small {
 }
 
 .file {
+	display: flex;
 	background: rgba(0, 0, 0, 0.05);
 	border-radius: 2px;
 	padding: 0.6em 1.2em;
-	display: flex;
+	transition: background 200ms ease;
+}
+
+.file:hover {
+	background: rgba(0, 0, 0, 0.10);
 }
 
 .file.active {
@@ -202,7 +207,7 @@ p.small {
 
 .site {
 	display: inline-block;
-	padding: 0.6rem 0.6rem 0.55rem;
+	padding: 0.5rem 0.5rem 0.45rem;
 	margin: 0 0.5rem 0.5rem 0;
 	border: 1px rgba(255, 255, 255, 0.1) solid;
 	border-radius: 4px;
@@ -213,13 +218,18 @@ p.small {
 
 .site-title {
 	display: block;
-	line-height: 1.2;
+	line-height: 1.0;
+	margin-bottom: 3px;
+	max-width: 180px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .site-domain {
 	display: block;
 	font-size: 11px;
-	line-height: 1.2;
+	line-height: 1.0;
 	opacity: 0.5;
 }
 
@@ -260,7 +270,7 @@ code {
 
 .canvas {
 	position: absolute;
-	top: 0; left: 0;
+	top: 0; left: 0; bottom: 0; right: 0;
 	width: 100%;
 	height: 100%;
 	opacity: 1.0;
