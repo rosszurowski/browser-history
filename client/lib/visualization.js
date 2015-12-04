@@ -61,7 +61,6 @@ export default function (data) {
 				const left = x(i)
 				const firstVisit = day.values[0]
 				y.domain(date.extentOfDay(firstVisit.last_visit_time))
-				console.log('rendering day ' + i)
 				day.values.forEach((site, j) => {
 					const top = y(site.last_visit_time)
 					const fill = getFillColor(site.url)

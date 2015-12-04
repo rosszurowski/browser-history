@@ -56,13 +56,14 @@
 				</div>
 			</section>
 			<section class="section-details" v-if="loaded">
-				<section class="detail-callouts">
+				<!-- <section class="detail-callouts">
 					<div class="callout-days">{{ dayCount | number }} days</div>
 					<div class="callout-pages">{{ pageCount | number }} pages</div>
-				</section>
+				</section> -->
 				<section class="detail-sites">
 					<div class="sites-header">
 						<div class="sites-header-title">Most Visited Sites</div>
+						<div>{{ pageCount | number }} pages</div>
 					</div>
 					<div class="sites-list">
 						<a class="site" :href="site.url" target="_blank" v-for="site in favorites">

@@ -289,8 +289,9 @@ code {
 	z-index: 3;
 }
 
-.canvas-loading .canvas-loading-progress {
-	width: 0%;
+.canvas-loading.loaded .canvas-loading-progress {
+	width: 0% !important;
+	transition-duration: 0ms;
 }
 
 .canvas-loading-track {

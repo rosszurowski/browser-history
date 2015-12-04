@@ -45,6 +45,7 @@ dispatcher.on('file:new', data => {
 })
 
 dispatcher.on('db:load', file => {
+	state.progress = 0.0
 	state.loaded = false
 	if (vis) vis.destroy()
 	// TODO: add memoizing
