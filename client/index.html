@@ -63,7 +63,7 @@
 				<section class="detail-sites">
 					<div class="sites-header">
 						<div class="sites-header-title">Most Visited Sites</div>
-						<div>{{ pageCount | number }} pages</div>
+						<div>out of {{ pageCount | number }} pages</div>
 					</div>
 					<div class="sites-list">
 						<a class="site" :href="site.url" target="_blank" v-for="site in favorites">
