@@ -27,7 +27,7 @@ dokku\:logs:
 	@ssh 159.203.6.69 -tt 'dokku logs browser-history'
 
 deploy:
-	@git push production master
+	@echo "Run 'git push production master' if you want to, but it will delete the database"
 
 clean:
 	@rm -rf node_modules
